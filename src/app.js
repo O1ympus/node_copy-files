@@ -6,25 +6,48 @@ const path = require('path');
 function copyFile() {
   const [currentLocation, locationToCopy] = process.argv.slice(2);
 
-  const resolvedSource = path.dirname(path.resolve(currentLocation));
+  if (currentLocation === undefined || locationToCopy === undefined) {
+    console.error('Not enough parameters');
+
+    return;
+  }
+
+  const resolvedSource = path.resolve(currentLocation);
   const resolvedDestination = path.resolve(locationToCopy);
-
-  if (!fs.existsSync(locationToCopy)) {
-    console.error('Destination path does not exist!');
-  }
-
-  if (!fs.lstatSync(locationToCopy).isDirectory()) {
-    console.error('Destination path is not a directory');
-  }
 
   if (resolvedSource === resolvedDestination) {
     console.error('You wrote the same source as destination');
+
+    return;
+  }
+
+  if (!fs.existsSync(currentLocation)) {
+    console.error('No such file to copy');
+
+    return;
+  }
+
+  if (
+    fs.existsSync(currentLocation) &&
+    fs.statSync(currentLocation).isDirectory()
+  ) {
+    console.error('Source is a directory');
+
+    return;
+  }
+
+  if (
+    fs.existsSync(locationToCopy) &&
+    fs.statSync(locationToCopy).isDirectory()
+  ) {
+    console.error('Destination is a directory');
+
+    return;
   }
 
   const content = fs.readFileSync(currentLocation, 'utf-8');
-  const fileName = path.basename(currentLocation);
 
-  fs.writeFileSync(path.join(locationToCopy, fileName), content);
+  fs.writeFileSync(locationToCopy, content);
 }
 
 copyFile();
