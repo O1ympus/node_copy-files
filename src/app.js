@@ -21,15 +21,15 @@ function copyFile() {
     return;
   }
 
-  if (!fs.existsSync(currentLocation)) {
+  if (!fs.existsSync(resolvedSource)) {
     console.error('No such file to copy');
 
     return;
   }
 
   if (
-    fs.existsSync(currentLocation) &&
-    fs.statSync(currentLocation).isDirectory()
+    fs.existsSync(resolvedSource) &&
+    fs.statSync(resolvedSource).isDirectory()
   ) {
     console.error('Source is a directory');
 
@@ -37,17 +37,17 @@ function copyFile() {
   }
 
   if (
-    fs.existsSync(locationToCopy) &&
-    fs.statSync(locationToCopy).isDirectory()
+    fs.existsSync(resolvedDestination) &&
+    fs.statSync(resolvedDestination).isDirectory()
   ) {
     console.error('Destination is a directory');
 
     return;
   }
 
-  const content = fs.readFileSync(currentLocation, 'utf-8');
+  const content = fs.readFileSync(resolvedSource, 'utf-8');
 
-  fs.writeFileSync(locationToCopy, content);
+  fs.writeFileSync(resolvedDestination, content);
 }
 
 copyFile();
